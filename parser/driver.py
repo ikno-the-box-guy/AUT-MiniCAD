@@ -2,7 +2,7 @@ import sys
 from antlr4 import *
 from gen.CadLexer import CadLexer
 from gen.CadParser import CadParser
-from VisitorInterp import VisitorInterp
+from TreeView import build_treeview
 
 
 def main(argv):
@@ -11,11 +11,8 @@ def main(argv):
     stream = CommonTokenStream(lexer)
     parser = CadParser(stream)
     tree = parser.start_()
-    if parser.getNumberOfSyntaxErrors() > 0:
-        print("syntax errors")
-    else:
-        vinterp = VisitorInterp()
-        vinterp.visit(tree)
+
+    build_treeview(tree, parser.ruleNames)
 
 
 if __name__ == '__main__':

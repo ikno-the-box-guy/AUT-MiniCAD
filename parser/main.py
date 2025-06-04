@@ -1,5 +1,6 @@
 import pygame as pg
-
+from src.DrawState import DrawState
+from src.processing.Interpreter import interpret
 
 _white = pg.Color('white')
 
@@ -13,11 +14,15 @@ def main():
     output_box = pg.Rect(30, 92, 432, 597)
     divider = pg.Rect(492, 0, 1, 720)
 
+    commands = []
     text = ''
     output = []
     done = False
 
     while not done:
+        draw_surface = pg.Surface((787, 720))
+        draw_state = DrawState(draw_surface)
+
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 done = True
@@ -25,6 +30,7 @@ def main():
                 if event.key == pg.K_RETURN:
                     if text.strip():
                         output.append(text)
+                        commands = commands + interpret(text)
                         text = ''
                 elif event.key == pg.K_BACKSPACE:
                     text = text[:-1]
@@ -66,6 +72,14 @@ def main():
         # Render divider
         pg.draw.rect(screen, _white, divider)
 
+        # Execute commands
+        for command in commands:
+            command.exec(draw_state)
+
+        # Render draw surface
+        screen.blit(draw_surface, (493, 0))
+
+        # Display everything
         pg.display.flip()
         clock.tick(30)
 

@@ -1,13 +1,10 @@
-import pygame as pg
-
 from src.Command import Command
 from src.DrawState import DrawState
 
 
-class FillCommand(Command):
+class WidthCommand(Command):
     def __init__(self, name: str, args: list = None):
         super().__init__(name, args)
 
     def exec(self, ds: DrawState):
-        new_color = pg.Color(self.args[0]) if self.args else pg.Color('black')
-        ds.backgroundColor = new_color
+        ds.borderWidth = self.args[0] if self.args else ds.borderWidth

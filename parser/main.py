@@ -9,6 +9,7 @@ def main():
     clock = pg.time.Clock()
 
     input_box = pg.Rect(30, 30, 200, 32)
+    caret = pg.Rect(input_box.x + 5, input_box.y + 5, 2, input_box.h - 10)
     output_box = pg.Rect(30, 92, 432, 597)
     divider = pg.Rect(492, 0, 1, 720)
 
@@ -22,8 +23,9 @@ def main():
                 done = True
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_RETURN:
-                    output.append(text)
-                    text = ''
+                    if text.strip():
+                        output.append(text)
+                        text = ''
                 elif event.key == pg.K_BACKSPACE:
                     text = text[:-1]
                 else:
@@ -45,11 +47,14 @@ def main():
         screen.blit(txt_surface, (input_box.x+5, input_box.y+5))
         # Render input_box
         pg.draw.rect(screen, _white, input_box, 2)
+        # Render caret
+        caret.x = input_box.x + 5 + txt_surface.get_width()
+        pg.draw.rect(screen, _white, caret)
 
-        # Draw the console output text
+        # Render console output
         font = pg.font.Font(None, 28)
         for i, line in enumerate(reversed(output)):
-            if i >= output_box.h // 28:
+            if i >= output_box.h // 28: # Clipping
                 break
 
             txt_surface = font.render(line, True, _white)

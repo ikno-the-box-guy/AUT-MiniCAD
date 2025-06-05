@@ -2,14 +2,17 @@ grammar Cad;
 
 // Parser rules
 start_ : cmd (';' cmd)* EOF;
-cmd : FILL WS color                     #fillCommand
-    | BORDER WS color                   #borderCommand
-    | WIDTH WS int                      #widthCommand
-    | CLEAR WS color                    #clearCommand
+cmd : FILL WS color                                                 #fillCommand
+    | BORDER WS color                                               #borderCommand
+    | WIDTH WS int                                                  #widthCommand
+    | CLEAR WS color                                                #clearCommand
 
-    | LINE WS position WS position      #lineCommand
-    | RECTANGLE WS position WS size     #rectangleCommand
-    | ELLIPSE WS position WS size       #ellipseCommand
+    | LINE WS position WS position                                  #lineCommand
+    | RECTANGLE WS position WS size                                 #rectangleCommand
+    | ELLIPSE WS position WS size                                   #ellipseCommand
+    | POLYGON WS position WS position (WS position)+                #polygonCommand
+
+    | UNDO                                                          #undoCommand
     ;
 
 position : int WS int ;
@@ -34,4 +37,5 @@ CLEAR : 'CLEAR' ;
 LINE : 'LINE' ;
 RECTANGLE : 'RECT' ;
 ELLIPSE : 'ELLIPSE' ;
-EXIT : 'EXIT' ;
+POLYGON : 'POLY' ;
+UNDO : 'UNDO' ;

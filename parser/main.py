@@ -30,7 +30,15 @@ def main():
                 if event.key == pg.K_RETURN:
                     if text.strip():
                         output.append(text)
-                        commands = commands + interpret(text)
+                        new_commands = interpret(text)
+
+                        for command in new_commands:
+                            if command.name == 'UNDO':
+                                if commands:
+                                    commands.pop()
+                            else:
+                                commands.append(command)
+
                         text = ''
                 elif event.key == pg.K_BACKSPACE:
                     text = text[:-1]
@@ -60,7 +68,7 @@ def main():
         # Render console output
         font = pg.font.Font(None, 28)
         for i, line in enumerate(reversed(output)):
-            if i >= output_box.h // 28: # Clipping
+            if i >= output_box.h // 28:  # Clipping
                 break
 
             txt_surface = font.render(line, True, _white)

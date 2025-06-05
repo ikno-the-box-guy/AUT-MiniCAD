@@ -11,5 +11,5 @@ class EllipseCommand(Command):
     def exec(self, ds: DrawState):
         ellipse_rect = pg.Rect(self.args[0], self.args[1])
 
+        pg.draw.ellipse(ds.draw_surface, ds.backgroundColor, ellipse_rect, 0)
         pg.draw.ellipse(ds.draw_surface, ds.borderColor, ellipse_rect, ds.borderWidth)
-        pg.draw.ellipse(ds.draw_surface, ds.backgroundColor, ellipse_rect.inflate(-ds.borderWidth * 2, -ds.borderWidth * 2))

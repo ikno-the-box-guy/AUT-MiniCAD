@@ -5,6 +5,7 @@ from src.commands.ClearCommand import ClearCommand
 from src.commands.EllipseCommand import EllipseCommand
 from src.commands.FillCommand import FillCommand
 from src.commands.LineCommand import LineCommand
+from src.commands.PolygonCommand import PolygonCommand
 from src.commands.RectangleCommand import RectangleCommand
 from src.commands.WidthCommand import WidthCommand
 
@@ -40,18 +41,25 @@ class VisitorImpl(CadVisitor):
         end = self.visit(ctx.position(1))
         return LineCommand("LINE", [start, end])
 
-    def visitEllipseCommand(self, ctx:CadParser.EllipseCommandContext):
+    def visitEllipseCommand(self, ctx: CadParser.EllipseCommandContext):
         position = self.visit(ctx.position())
         size = self.visit(ctx.size())
         return EllipseCommand("ELLIPSE", [position, size])
 
-    def visitRectangleCommand(self, ctx:CadParser.RectangleCommandContext):
+    def visitRectangleCommand(self, ctx: CadParser.RectangleCommandContext):
         position = self.visit(ctx.position())
         size = self.visit(ctx.size())
         return RectangleCommand("RECT", [position, size])
 
+    def visitPolygonCommand(self, ctx: CadParser.PolygonCommandContext):
+        points = [self.visit(point) for point in ctx.position()]
+        return PolygonCommand("POLYGON", points)
+
+    def visitUndoCommand(self, ctx: CadParser.UndoCommandContext):
+        return LineCommand("UNDO", [])
+
     def visitStart_(self, ctx: CadParser.Start_Context):
         commands = []
-        for i in range(0, ctx.getChildCount(), 2):
-            commands.append(self.visit(ctx.getChild(i)))
+        for cmd in ctx.cmd():
+            commands.append(self.visit(cmd))
         return commands

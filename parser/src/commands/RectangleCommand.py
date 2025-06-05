@@ -11,5 +11,5 @@ class RectangleCommand(Command):
     def exec(self, ds: DrawState):
         rect = pg.Rect(self.args[0], self.args[1])
 
-        ds.draw_surface.fill(ds.borderColor, rect)
-        ds.draw_surface.fill(ds.backgroundColor, rect.inflate(-ds.borderWidth * 2, -ds.borderWidth * 2))
+        pg.draw.rect(ds.draw_surface, ds.backgroundColor, rect, 0)
+        pg.draw.rect(ds.draw_surface, ds.borderColor, rect, ds.borderWidth)

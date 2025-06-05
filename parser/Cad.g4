@@ -1,7 +1,7 @@
 grammar Cad;
 
 // Parser rules
-start_ : cmd (';' cmd)* EOF;
+start_ : cmd (';' cmd)* ';'? EOF;
 cmd : FILL WS color                                                 #fillCommand
     | BORDER WS color                                               #borderCommand
     | WIDTH WS int                                                  #widthCommand

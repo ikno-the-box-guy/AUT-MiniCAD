@@ -1,8 +1,10 @@
 import os
 
 import pygame as pg
+import tkinter as tk
+import tkinter.filedialog
 from src.DrawState import DrawState
-from src.processing.Interpreter import interpret
+from src.processing.Interpreter import interpret_file, interpret_text
 
 _white = pg.Color('white')
 
@@ -10,6 +12,9 @@ _white = pg.Color('white')
 def main():
     screen = pg.display.set_mode((1280, 720))
     clock = pg.time.Clock()
+
+    root = tk.Tk()
+    root.withdraw()
 
     input_box = pg.Rect(30, 30, 200, 32)
     caret = pg.Rect(input_box.x + 5, input_box.y + 5, 2, input_box.h - 10)
@@ -32,11 +37,21 @@ def main():
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 done = True
+            if event.type == pg.MOUSEBUTTONDOWN:
+                if import_box.collidepoint(event.pos):
+                    # Open file dialog to select a file
+                    file_path = tk.filedialog.askopenfilename(
+                        title="Select a file",
+                        filetypes=[("Text files", "*.txt"), ("All files", "*.*")]
+                    )
+                    if file_path:
+                        commands = interpret_file(file_path)
+                        output.append(f"Loaded commands from file")
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_RETURN:
                     if text.strip():
                         output.append(text)
-                        new_commands = interpret(text)
+                        new_commands = interpret_text(text)
 
                         for command in new_commands:
                             if command.name == 'UNDO':
@@ -56,6 +71,8 @@ def main():
 
         # Render import box
         pg.draw.rect(screen, _white, import_box, 2)
+        import_text = input_font.render("F", True, _white)
+        screen.blit(import_text, (import_box.x + 10, import_box.y + 2))
 
         # Render text
         txt_surface = input_font.render(text[-30:], True, _white)

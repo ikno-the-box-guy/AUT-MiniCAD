@@ -1,3 +1,5 @@
+import os
+
 import pygame as pg
 from src.DrawState import DrawState
 from src.processing.Interpreter import interpret
@@ -12,7 +14,11 @@ def main():
     input_box = pg.Rect(30, 30, 200, 32)
     caret = pg.Rect(input_box.x + 5, input_box.y + 5, 2, input_box.h - 10)
     output_box = pg.Rect(30, 92, 432, 597)
+    import_box = pg.Rect(430, 30, 32, 32)
     divider = pg.Rect(492, 0, 1, 720)
+
+    input_font = pg.font.Font(os.path.join("fonts", 'JetBrainsMono-Regular.ttf'), 20)
+    output_font = pg.font.Font(os.path.join("fonts", 'JetBrainsMono-Regular.ttf'), 20)
 
     commands = []
     text = ''
@@ -48,17 +54,17 @@ def main():
         # Clear screen
         screen.fill((30, 30, 30))
 
+        # Render import box
+        pg.draw.rect(screen, _white, import_box, 2)
+
         # Render text
-        font = pg.font.Font(None, 32)
-        txt_surface = font.render(text, True, _white)
+        txt_surface = input_font.render(text[-30:], True, _white)
 
         # Resize box if text too long
-        # TODO: Add a maximum width for the input box
-        width = max(200, txt_surface.get_width()+10)
-        input_box.w = width
+        input_box.w = min(370, max(200, txt_surface.get_width()+10))
 
         # Render text
-        screen.blit(txt_surface, (input_box.x+5, input_box.y+5))
+        screen.blit(txt_surface, (input_box.x+5, input_box.y + 2))
         # Render input_box
         pg.draw.rect(screen, _white, input_box, 2)
         # Render caret
@@ -66,13 +72,12 @@ def main():
         pg.draw.rect(screen, _white, caret)
 
         # Render console output
-        font = pg.font.Font(None, 28)
         for i, line in enumerate(reversed(output)):
             if i >= output_box.h // 28:  # Clipping
                 break
 
-            txt_surface = font.render(line, True, _white)
-            screen.blit(txt_surface, (output_box.x+5, output_box.y + output_box.h - (i + 1) * 28))
+            txt_surface = output_font.render(line, True, _white)
+            screen.blit(txt_surface, (output_box.x+5, output_box.y + output_box.h - (i + 1) * 28 - 1))
 
         # Render output box
         pg.draw.rect(screen, _white, output_box, 2)

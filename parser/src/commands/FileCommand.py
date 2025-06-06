@@ -7,7 +7,15 @@ class FileCommand(Command):
         super().__init__(name, args)
 
         from src.processing.Interpreter import interpret_file
-        self.commands = interpret_file(args[0])
+        self.commands = []
+        new_commands = interpret_file(args[0])
+
+        for command in new_commands:
+            if command.name == 'UNDO':
+                if self.commands:
+                    self.commands.pop()
+            else:
+                self.commands.append(command)
 
     def exec(self, ds: DrawState):
         # Save ds state before executing commands

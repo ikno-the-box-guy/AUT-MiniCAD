@@ -12,6 +12,8 @@ cmd : FILL WS color                                                 #fillCommand
     | ELLIPSE WS position WS size                                   #ellipseCommand
     | POLYGON WS position WS position (WS position)+                #polygonCommand
 
+    | FILE WS filepath                                              #fileCommand
+
     | UNDO                                                          #undoCommand
     ;
 
@@ -21,10 +23,13 @@ size : int WS int ;
 color : COLOR;
 int : INT;
 
+filepath : STRING;
+
 // Lexer rules
 COLOR : '#' HEX HEX HEX HEX HEX HEX ;
 fragment HEX : [0-9a-fA-F] ;
 INT : [0-9]+ ;
+STRING : '"' (~["\r\n])* '"' ;
 
 WS : ' ';
 NL : [\n\r]+ -> skip ;
@@ -38,4 +43,5 @@ LINE : 'LINE' ;
 RECTANGLE : 'RECT' ;
 ELLIPSE : 'ELLIPSE' ;
 POLYGON : 'POLY' ;
+FILE : 'LOAD' ;
 UNDO : 'UNDO' ;

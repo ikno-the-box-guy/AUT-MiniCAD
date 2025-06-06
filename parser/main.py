@@ -4,6 +4,7 @@ import pygame as pg
 import tkinter as tk
 import tkinter.filedialog
 from src.DrawState import DrawState
+from src.commands.FileCommand import FileCommand
 from src.processing.Interpreter import interpret_file, interpret_text
 
 _white = pg.Color('white')
@@ -45,7 +46,7 @@ def main():
                         filetypes=[("Text files", "*.txt"), ("All files", "*.*")]
                     )
                     if file_path:
-                        commands = interpret_file(file_path)
+                        commands.append(FileCommand('FILE', [file_path]))
                         output.append(f"Loaded commands from file")
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_RETURN:

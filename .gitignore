@@ -1,4 +1,6 @@
 **/gen
+**/.venv
 **/venv
 **/.idea
 **/__pycache__
+**/.antlr

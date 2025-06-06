@@ -2,19 +2,23 @@
 AUT-MiniCAD is a command based drawing tool made as an assignment for Automata. 
 
 
-AUT-MiniCAD is written in python and uses pygame for all the rendering. Antlr4 is used to parse all user input.
+AUT-MiniCAD is written in Python and uses **Pygame** for rendering. **ANTLR4** is used to parse all user input.
+
+# Dependencies
+This project was made using **Python 3.12**. The required pip dependencies are listed in ``requirements.txt``. This project also relies on [tkinter](https://docs.python.org/3/library/tkinter.html), which usually comes bundled with Python, but may need to be installed separately in some cases. 
 
 # Drawing Commands
+Note that all commands are case sensitive.
 
 ## Colors & Strokes
 
-- `FILL_COLOR c`  
+- `FILL c`  
   Sets the fill color for shapes. Use hex codes (e.g. `#FF0000`).
 
-- `BORDER_COLOR c`  
+- `BORDER c`  
   Sets the border (stroke) color for shapes and lines.
 
-- `STROKE_WIDTH px`  
+- `WIDTH px`  
   Sets the thickness of strokes and borders in pixels.
 
 - `CLEAR c`  
@@ -41,7 +45,8 @@ AUT-MiniCAD is written in python and uses pygame for all the rendering. Antlr4 i
   Reverts the last drawing action.
 
 - `LOAD "fp"`
-  Loads a file using the specified filepath. File loading is seen as one action: calling undo will undo all actions executed by the file. Any changes made to the fill color, border color or stroke width will not persist (i.e. changing the fill color inside the file will not affect the RECT command outside the file).  
+  Loads a file using the specified filepath. File loading is seen as one action: calling ``UNDO`` will undo all actions executed by the file. \
+  Any changes made to the fill color, border color or stroke width within the file will not persist outside the file (i.e. changing the fill color inside the file will not affect the ``RECT`` command outside the file).  
 
 
 # Multiple commands, input files and strict whitepsace
@@ -52,7 +57,8 @@ AUT-MiniCAD can handle multiple commands at once, as long as they are separated 
 > [!NOTE]
 > Whitespace usage is strict. Command parameters have to be separated by exactly one space. Spaces in any other spot will result in a syntax error, even after a semicolon.
 
-AUT-MiniCAD can also handle input from an input file. Simply write out all the commands and end them with a semicolon. You are not allowed to put space between commands, but you can put a newline.
+You can also load commands from an input file. Simply list all the commands, each ending with a semicolon.
+You are **not** allowed to put spaces between commands, but you may use newlines.
 
 ``LOAD "input.txt"``
 

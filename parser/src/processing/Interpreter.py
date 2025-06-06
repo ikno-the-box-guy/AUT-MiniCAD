@@ -21,8 +21,7 @@ def interpret(input_stream):
     tree = parser.start_()
 
     if parser.getNumberOfSyntaxErrors() > 0:
-        print("syntax errors")
-        return []
+        raise SyntaxError("Syntax errors detected in the input.")
     else:
         commands = VisitorImpl().visit(tree)
         return commands

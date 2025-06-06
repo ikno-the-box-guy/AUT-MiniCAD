@@ -24,7 +24,7 @@ def main():
     divider = pg.Rect(492, 0, 1, 720)
 
     input_font = pg.font.Font(os.path.join("fonts", 'JetBrainsMono-Regular.ttf'), 20)
-    output_font = pg.font.Font(os.path.join("fonts", 'JetBrainsMono-Regular.ttf'), 20)
+    output_font = pg.font.Font(os.path.join("fonts", 'JetBrainsMono-Regular.ttf'), 10)
 
     commands = []
     text = ''
@@ -46,21 +46,27 @@ def main():
                         filetypes=[("Text files", "*.txt"), ("All files", "*.*")]
                     )
                     if file_path:
-                        commands.append(FileCommand('FILE', [file_path]))
-                        output.append(f"Loaded commands from file")
+                        try:
+                            commands.append(FileCommand('FILE', [file_path]))
+                            output.append(["success", f"Loaded commands from file"])
+                        except Exception as e:
+                            output.append(["error", f"File error: {str(e)}"])
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_RETURN:
                     if text.strip():
-                        output.append(text)
-                        new_commands = interpret_text(text)
+                        try:
+                            new_commands = interpret_text(text)
 
-                        for command in new_commands:
-                            if command.name == 'UNDO':
-                                if commands:
-                                    commands.pop()
-                            else:
-                                commands.append(command)
+                            for command in new_commands:
+                                if command.name == 'UNDO':
+                                    if commands:
+                                        commands.pop()
+                                else:
+                                    commands.append(command)
 
+                            output.append(["success", text])
+                        except Exception as e:
+                            output.append(["error", f"Error: {str(e)}"])
                         text = ''
                 elif event.key == pg.K_BACKSPACE:
                     text = text[:-1]
@@ -91,11 +97,16 @@ def main():
 
         # Render console output
         for i, line in enumerate(reversed(output)):
-            if i >= output_box.h // 28:  # Clipping
+            if i >= output_box.h // 14:  # Clipping
                 break
 
-            txt_surface = output_font.render(line, True, _white)
-            screen.blit(txt_surface, (output_box.x+5, output_box.y + output_box.h - (i + 1) * 28 - 1))
+            if line[0] == "error":
+                color = pg.Color('red')
+            else:
+                color = pg.Color('white')
+
+            txt_surface = output_font.render(line[1][:70], True, color)
+            screen.blit(txt_surface, (output_box.x+5, output_box.y + output_box.h - (i + 1) * 14 - 5))
 
         # Render output box
         pg.draw.rect(screen, _white, output_box, 2)
